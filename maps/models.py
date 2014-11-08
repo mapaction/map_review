@@ -1,87 +1,6 @@
 from django.db import models
 from django.core.validators import RegexValidator
 
-# Create your models here.
-"""
-File name
-Name of reviewer
-Map title
-Map language
-GLIDE number
-Disaster type
-Disaster start date
-Map production date
-Situational data date
-Day
-Map extent
-Map authors/producers
-Donor
-Map series indicator
-Update frequency
-Infographics
-
-Disclaimer/indication of uncertainty
-Copyright statement
-Satellite data indicator
-Phase type
-Date of data
-Name of sensor and source
-Admin boundaries indicator
-Most detailed data level
-Source of data
-Roads indicator
-Source of data
-Hydrographic network indicator
-Source of data
-Elevation data indicator
-Type of data
-Source of data
-Settlement data indicator
-Most detailed data level
-Type of data
-Source of data
-Hospitals/health facilities indicator
-Source of data
-Schools indicator
-Source of data
-Shelter indicator
-Source of data
-Date of data
-Geographic extent of impact indicator
-Type of data
-Are the data modelled/predicted or observed
-Situational date
-Damaged objects
-Situational date
-Population data indicator
-Type of data
-Source of data
-Date of data
-Affected population indicator
-Humanitarian profile level 1 type
-Disaggregated affected population type
-Date of data
-Source of data
-Statistical data indicator
-Statistical data type
-Pre/post disaster indicator
-Date of data
-Source of data
-Active clusters
-Sub-cluster information indicator
-Activity detail indicator
-Assessments
-Humanitarian needs indicator
-Date of data
-Source of data
-Gaps
-Resourcing/funding
-Date of data
-Source of data
-Additional datasets
-Data sources not directly associated with another dataset
-"""
-
 
 # TODO: Not sure what this should contain?
 UPDATE_FREQUENCY_CHOICES = (
@@ -353,7 +272,7 @@ class Map(models.Model):
     # Physical impact
     has_impact_geographic_extent = models.BooleanField()
     #    TODO
-#    impact_data_types = models.ManyToMany(
+#    impact_data_types = models.ManyToManyField(
 #        ImpactDataType
 #    )
     impact_data_source_type = models.CharField(
@@ -370,7 +289,7 @@ class Map(models.Model):
         null=True, blank=True,
     )
     #    TODO:
-#    damaged_objects = models.ManyToMany(
+#    damaged_objects = models.ManyToManyField(
 #        ObjectType
 #    )
     damage_situational_date_earliest = models.DateField(
@@ -400,10 +319,10 @@ class Map(models.Model):
 
     has_affected_population_data = models.BooleanField()
     # TODO:
-#    humanitarian_profile_level_1_types = models.ManyToMany(
+#    humanitarian_profile_level_1_types = models.ManyToManyField(
 #        HumanitarianProfileLevelType
 #    )
-#    disaggregated_affected_population_types = models.ManyToMany(
+#    disaggregated_affected_population_types = models.ManyToManyField(
 #        DisaggregatedAffectedPopulationType
 #    )
 
@@ -413,25 +332,25 @@ class Map(models.Model):
     affected_population_data_date_latest = models.DateField(
         null=True, blank=True,
     )
-    affected_population_data_source = models.ManyToMany(
+    affected_population_data_source = models.ManyToManyField(
         DataSource,
     )
 
     # Statistical data
     has_statistical_data = models.BooleanField()
-    statistical_data = models.ManyToMany(
+    statistical_data = models.ManyToManyField(
         StatisticalOrIndicatorData
     )
 
     # Needs, activites & gaps
     # TODO:
-#    active_clusters = models.ManyToMany(
+#    active_clusters = models.ManyToManyField(
 #        Cluster
 #    )
     has_subcluster_information = models.BooleanField()
     has_activity_detail = models.BooleanField()
     # TODO:
-#    assessments = models.ManyToMany(
+#    assessments = models.ManyToManyField(
 #        Assessment
 #    )
     has_humanitarian_needs = models.BooleanField()
@@ -445,15 +364,15 @@ class Map(models.Model):
         DataSource,
         null=True, blank=True,
     )
-    # FIXME
-    gaps = models.MultipleChoiceField(
-        choices=(),
-        max_length=50,
-    )
-    resourcing_or_funding = models.MultipleChoiceField(
-        choices=(),
-        max_length=50,
-    )
+    # TODO
+#    gaps = models.ManyToManyField(
+#        Gap
+#        max_length=50,
+#    )
+#    resourcing_or_funding = models.ManyToManyField(
+#        ResourceOrFund,
+#        max_length=50,
+#    )
     resourcing_data_date_earliest = models.DateField(
         null=True, blank=True,
     )
@@ -463,7 +382,7 @@ class Map(models.Model):
 
     # Other
 #    # TODO
-#    additional_datasets = models.ManyToMany(
+#    additional_datasets = models.ManyToManyField(
 #        AdditionalDataset
 #    )
     indirect_datasets = models.TextField(blank=True, null=True)
