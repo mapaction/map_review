@@ -1,3 +1,8 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Event, DataSource, StatisticalOrIndicatorData, Map
+
+admin.site.register(Event)
+admin.site.register(DataSource)
+admin.site.register(StatisticalOrIndicatorData)
+admin.site.register(Map)

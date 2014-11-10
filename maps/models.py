@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import RegexValidator
+from django_hstore import hstore
 
 
 # TODO: Not sure what this should contain?
@@ -73,7 +74,7 @@ class DataSource(models.Model):
         ), max_length=20,
     )
     name = models.CharField(max_length=255)
-    meta = models.DictionaryField()
+    meta = hstore.DictionaryField()
 
     def __unicode__(self):
         return "{0} - {1}".format(self.name, self.sensor_type)
@@ -84,7 +85,7 @@ class StatisticalOrIndicatorData(models.Model):
         max_length=255,
         null=True, blank=True,
     )
-    is_pre_or_post = models.ChoiceField(
+    is_pre_or_post = models.CharField(
         choices=(
             ('PRE', 'Pre-event'),
             ('POST', 'Post-event'),
@@ -100,6 +101,7 @@ class StatisticalOrIndicatorData(models.Model):
     )
     data_source = models.ForeignKey(
         DataSource,
+        related_name="stats_source_for",
         null=True, blank=True,
     )
 
@@ -145,7 +147,9 @@ class Map(models.Model):
     # TODO: Extent indicated to be choice list, with multiples possible.
     # Not sure what these choices are (per map?)
     extent = models.CharField(
-        help_text="Geographical extent of the map."
+        help_text="Geographical extent of the map.",
+        choices=(),
+        max_length=100,
     )
 
     authors_or_producers = models.TextField(
@@ -159,7 +163,8 @@ class Map(models.Model):
         help_text="Organisation(s) attributed with funding the map "
         "production."
     )
-    series_indicator = models.BooleanField(
+    is_part_of_series = models.BooleanField(
+        default=False,
         help_text="Is/was the map part of a regularly udpated series?"
     )
     update_frequency = models.CharField(
@@ -182,8 +187,8 @@ class Map(models.Model):
     )
 
     # Satellite data group
-    has_satellite_data = models.BooleanField()
-    phase_type = models.ChoiceField(
+    has_satellite_data = models.BooleanField(default=False)
+    phase_type = models.CharField(
         help_text="Is it pre or post disaster imagery?",
         max_length=255, choices=(),
         null=True, blank=True,
@@ -191,47 +196,52 @@ class Map(models.Model):
     satellite_data_date = models.DateField(null=True, blank=True)
     satellite_data_source = models.ForeignKey(
         DataSource,
+        related_name="satellite_source_for",
         null=True, blank=True
     )
 
     # Admin boundaries group
-    has_admin_boundaries = models.BooleanField()
+    has_admin_boundaries = models.BooleanField(default=False)
     admin_max_detail_level = models.CharField(
         choices=(), max_length=50,
         null=True, blank=True,
     )
     admin_data_source = models.ForeignKey(
         DataSource,
+        related_name="admin_source_for",
         null=True, blank=True,
     )
 
     # Roads group
-    has_roads = models.BooleanField()
+    has_roads = models.BooleanField(default=False)
     roads_data_source = models.ForeignKey(
         DataSource,
+        related_name="roads_source_for",
         null=True, blank=True,
     )
 
     # Hydrography group
-    has_hydrographic_network = models.BooleanField()
+    has_hydrographic_network = models.BooleanField(default=False)
     hydrographic_data_source = models.ForeignKey(
         DataSource,
+        related_name="hydrographic_source_for",
         null=True, blank=True,
     )
 
     # Elevation group
-    has_elevation_data = models.BooleanField()
+    has_elevation_data = models.BooleanField(default=False)
     elevation_data_type = models.CharField(
         choices=(), max_length=50,
         null=True, blank=True,
     )
     elevation_data_source = models.ForeignKey(
         DataSource,
+        related_name="elevation_source_for",
         null=True, blank=True,
     )
 
     # Settlements group
-    has_settlements_data = models.BooleanField()
+    has_settlements_data = models.BooleanField(default=False)
     settlements_max_detail_level = models.CharField(
         choices=(), max_length=50,
         null=True, blank=True,
@@ -242,27 +252,31 @@ class Map(models.Model):
     )
     settlements_data_source = models.ForeignKey(
         DataSource,
+        related_name="settlements_source_for",
         null=True, blank=True,
     )
 
     # Health data
-    has_health_data = models.BooleanField()
+    has_health_data = models.BooleanField(default=False)
     health_data_source = models.ForeignKey(
         DataSource,
+        related_name="health_source_for",
         null=True, blank=True,
     )
 
     # Schools group
-    has_schools_data = models.BooleanField()
+    has_schools_data = models.BooleanField(default=False)
     schools_data_source = models.ForeignKey(
         DataSource,
+        related_name="schools_source_for",
         null=True, blank=True,
     )
 
     # Shelter group
-    has_shelter_data = models.BooleanField()
+    has_shelter_data = models.BooleanField(default=False)
     shelter_data_source = models.ForeignKey(
         DataSource,
+        related_name="shelter_source_for",
         null=True, blank=True,
     )
     shelter_data_date = models.DateField(
@@ -270,7 +284,7 @@ class Map(models.Model):
     )
 
     # Physical impact
-    has_impact_geographic_extent = models.BooleanField()
+    has_impact_geographic_extent = models.BooleanField(default=False)
     #    TODO
 #    impact_data_types = models.ManyToManyField(
 #        ImpactDataType
@@ -300,14 +314,15 @@ class Map(models.Model):
     )
 
     # Population group
-    has_population_data = models.BooleanField()
-    population_data_type = models.ChoiceField(
+    has_population_data = models.BooleanField(default=False)
+    population_data_type = models.CharField(
         choices=(),
         max_length=50,
         null=True, blank=True,
     )
     population_data_source = models.ForeignKey(
         DataSource,
+        related_name="population_source_for",
         null=True, blank=True,
     )
     population_data_date_earliest = models.DateField(
@@ -317,7 +332,7 @@ class Map(models.Model):
         null=True, blank=True,
     )
 
-    has_affected_population_data = models.BooleanField()
+    has_affected_population_data = models.BooleanField(default=False)
     # TODO:
 #    humanitarian_profile_level_1_types = models.ManyToManyField(
 #        HumanitarianProfileLevelType
@@ -334,10 +349,11 @@ class Map(models.Model):
     )
     affected_population_data_source = models.ManyToManyField(
         DataSource,
+        related_name="affected_population_source_for",
     )
 
     # Statistical data
-    has_statistical_data = models.BooleanField()
+    has_statistical_data = models.BooleanField(default=False)
     statistical_data = models.ManyToManyField(
         StatisticalOrIndicatorData
     )
@@ -347,13 +363,13 @@ class Map(models.Model):
 #    active_clusters = models.ManyToManyField(
 #        Cluster
 #    )
-    has_subcluster_information = models.BooleanField()
-    has_activity_detail = models.BooleanField()
+    has_subcluster_information = models.BooleanField(default=False)
+    has_activity_detail = models.BooleanField(default=False)
     # TODO:
 #    assessments = models.ManyToManyField(
 #        Assessment
 #    )
-    has_humanitarian_needs = models.BooleanField()
+    has_humanitarian_needs = models.BooleanField(default=False)
     humanitarian_needs_data_date_earliest = models.DateField(
         null=True, blank=True,
     )
@@ -362,6 +378,7 @@ class Map(models.Model):
     )
     humanitarian_needs_data_source = models.ForeignKey(
         DataSource,
+        related_name="humanitarian_needs_source_for",
         null=True, blank=True,
     )
     # TODO
