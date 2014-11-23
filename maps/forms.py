@@ -46,12 +46,13 @@ class CreateReviewForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(CreateReviewForm, self).__init__(*args, **kwargs)
-        for f_nm in ['extent', 'infographics']:
-            # The default widget is a checkbox one, but we want to use chosen
-            # so revert to regular select:
-            self.fields[f_nm].widget = forms.SelectMultiple(
-                choices=self.fields[f_nm].choices
-            )
+        # The default widget is a checkbox one, but we want to use chosen
+        # so revert to regular select:
+        for f in self.fields:
+            if isinstance(self.fields[f].widget, forms.CheckboxSelectMultiple):
+                self.fields[f].widget = forms.SelectMultiple(
+                    choices=self.fields[f].choices
+                )
         self.helper = FormHelper()
 
         geo_field_groups_by_indicator = []
@@ -110,8 +111,8 @@ class CreateReviewForm(forms.ModelForm):
 
         pop_field_groups_by_indicator.extend(fields_of(
             'has_affected_population_data',
-            # TODO: humanitarian_profile_level_1_types
-            # TODO: disaggregated_affected_population_types
+            'humanitarian_profile_level_1_types',
+            'disaggregated_affected_population_types',
             'affected_population_data_date_earliest',
             'affected_population_data_date_latest',
             'affected_population_data_source',
@@ -152,7 +153,7 @@ class CreateReviewForm(forms.ModelForm):
                 'is_part_of_series',
                 Field('update_frequency', css_class='chosen'),
                 Field('infographics', css_class='chosen'),
-                'disclaimer',
+                Field('disclaimer', css_class='chosen'),
                 'copyright',
             ),
             Fieldset(
@@ -163,11 +164,11 @@ class CreateReviewForm(forms.ModelForm):
                 'Impact data',
                 *fields_of(
                     'has_impact_geographic_extent',
-                    # TODO: impact_data_types
+                    'impact_data_types',
                     'impact_data_source_type',
                     'impact_situational_date_earliest',
                     'impact_situational_date_latest',
-                    # TODO: damaged_objects
+                    'damaged_objects',
                     'damage_situational_date_earliest',
                     'damage_situational_date_latest',
                 )

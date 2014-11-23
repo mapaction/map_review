@@ -185,7 +185,7 @@ class Map(models.Model):
     authors_or_producers = models.ManyToManyField(
         Actor,
         related_name='author_or_producer_of',
-        help_text="Name of the organisation(s) that authored the map - this"
+        help_text="Name of the organisation(s) that authored the map - this "
         "should include all organisations acknowledged in the map marginalia "
         "by logos/name, or as part of the map title as having "
         "authored/produced the map. Organisations attributed with funding the "
@@ -225,7 +225,13 @@ class Map(models.Model):
         help_text="Infographics or other non-map items in map.",
         null=True, blank=True
     )
-    disclaimer = models.TextField(
+    disclaimer = MultiSelectField(
+        choices=make_choices(
+            'None',
+            'General disclaimer',
+            'Narrative on possible errors/limitations',
+            'Uses statistical confidence measures for the data',
+        ),
         null=True, blank=True
     )
     copyright = models.TextField(
@@ -349,10 +355,20 @@ class Map(models.Model):
 
     # Physical impact
     has_impact_geographic_extent = models.BooleanField(default=False)
-    #    TODO
-#    impact_data_types = models.ManyToManyField(
-#        ImpactDataType
-#    )
+    impact_data_types = MultiSelectField(
+        choices=make_choices(
+            'Flooded area',
+            'Landslides',
+            'Rainfall',
+            'Wind speeds',
+            'Storm path',
+            'Storm surge',
+            'Earthquake damage extent',
+            'Extent of conflict area',
+            'Other',
+        ),
+        null=True, blank=True,
+    )
     impact_data_source_type = models.CharField(
         choices=(
             ('MODEL', 'Modelled/predicted'),
@@ -366,10 +382,23 @@ class Map(models.Model):
     impact_situational_date_latest = models.DateField(
         null=True, blank=True,
     )
-    #    TODO:
-#    damaged_objects = models.ManyToManyField(
-#        ObjectType
-#    )
+    damaged_objects = MultiSelectField(
+        choices=make_choices(
+            'Buildings',
+            'Houses',
+            'Police stations',
+            'Fire stations',
+            'Water supplies',
+            'Communications',
+            'Schools',
+            'Roads',
+            'Health facilities/hospitals',
+            'Power supplies',
+            'Markets',
+            'Other',
+        ),
+        null=True, blank=True,
+    )
     damage_situational_date_earliest = models.DateField(
         null=True, blank=True,
     )
@@ -397,13 +426,24 @@ class Map(models.Model):
     )
 
     has_affected_population_data = models.BooleanField(default=False)
-    # TODO:
-#    humanitarian_profile_level_1_types = models.ManyToManyField(
-#        HumanitarianProfileLevelType
-#    )
-#    disaggregated_affected_population_types = models.ManyToManyField(
-#        DisaggregatedAffectedPopulationType
-#    )
+    humanitarian_profile_level_1_types = MultiSelectField(
+        choices=make_choices(
+            'Numbers of dead',
+            'Numbers of missing/injured',
+            'Numbers of displaced',
+            'Number affected but not displaced',
+            'Other',
+        ),
+        null=True, blank=True,
+    )
+    disaggregated_affected_population_types = MultiSelectField(
+        choices=make_choices(
+            'Age',
+            'Gender',
+            'Other',
+        ),
+        null=True, blank=True,
+    )
 
     affected_population_data_date_earliest = models.DateField(
         null=True, blank=True,
