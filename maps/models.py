@@ -2,11 +2,23 @@ from django.db import models
 from django.core.validators import RegexValidator
 from django_hstore import hstore
 
+from multiselectfield import MultiSelectField
 
 # TODO: Not sure what this should contain?
 UPDATE_FREQUENCY_CHOICES = (
     ('DAILY', 'Daily'),
 )
+
+
+def make_choices(*choices):
+    """Just dupes choices name/value"""
+    return [(c, c) for c in choices]
+
+
+class Actor(models.Model):
+    """An actor in the scene."""
+    is_cluster = models.BooleanField(default=False)
+    name = models.CharField(max_length=200)
 
 
 class Event(models.Model):
@@ -148,18 +160,30 @@ class Map(models.Model):
     # Not sure what these choices are (per map?)
     extent = models.CharField(
         help_text="Geographical extent of the map.",
-        choices=(),
+        choices=make_choices(
+            'Country',
+            'Affected regions',
+            'Region 4B',
+            'Region 5',
+            'Region 6',
+            'Region 7',
+            'Region 8',
+        ),
         max_length=100,
     )
 
-    authors_or_producers = models.TextField(
+    authors_or_producers = models.ManyToManyField(
+        Actor,
+        related_name='author_or_producer_of',
         help_text="Name of the organisation(s) that authored the map - this"
         "should include all organisations acknowledged in the map marginalia "
         "by logos/name, or as part of the map title as having "
         "authored/produced the map. Organisations attributed with funding the "
-        "map production should be entered in the 'Donor' field."
+        "map production should be entered in the 'Donor' field.",
     )
-    donor = models.TextField(
+    donors = models.ManyToManyField(
+        Actor,
+        related_name='donor_to',
         help_text="Organisation(s) attributed with funding the map "
         "production."
     )
@@ -175,7 +199,14 @@ class Map(models.Model):
     )
     # TODO: infographics indicated to be choice list, with multiples possible.
     # Not sure what these choices are (per map?)
-    infographics = models.TextField(
+    infographics = MultiSelectField(
+        choices=make_choices(
+            'Infographic',
+            'Pie chart',
+            'Bar chart',
+            'Table',
+            'Other',
+        ),
         help_text="Infographics or other non-map items in map.",
         null=True, blank=True
     )

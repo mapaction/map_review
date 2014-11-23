@@ -2,6 +2,7 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+import multiselectfield.db.fields
 import django.core.validators
 import django_hstore.fields
 
@@ -12,6 +13,17 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.CreateModel(
+            name='Actor',
+            fields=[
+                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('is_cluster', models.BooleanField(default=False)),
+                ('name', models.CharField(max_length=200)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
         migrations.CreateModel(
             name='DataSource',
             fields=[
@@ -49,12 +61,10 @@ class Migration(migrations.Migration):
                 ('production_date', models.DateField(help_text=b'Date that the map was produced, as shown on the map', null=True, blank=True)),
                 ('situational_data_date', models.DateField(help_text=b'Overall date of situational data shown on map, if known.', null=True, blank=True)),
                 ('day_offset', models.PositiveIntegerField(help_text=b'Number of days between disaster onset and map production.')),
-                ('extent', models.CharField(help_text=b'Geographical extent of the map.', max_length=100)),
-                ('authors_or_producers', models.TextField(help_text=b"Name of the organisation(s) that authored the map - thisshould include all organisations acknowledged in the map marginalia by logos/name, or as part of the map title as having authored/produced the map. Organisations attributed with funding the map production should be entered in the 'Donor' field.")),
-                ('donor', models.TextField(help_text=b'Organisation(s) attributed with funding the map production.')),
-                ('series_indicator', models.BooleanField(default=False, help_text=b'Is/was the map part of a regularly udpated series?')),
+                ('extent', models.CharField(help_text=b'Geographical extent of the map.', max_length=100, choices=[(b'Country', b'Country'), (b'Affected regions', b'Affected regions'), (b'Region 4B', b'Region 4B'), (b'Region 5', b'Region 5'), (b'Region 6', b'Region 6'), (b'Region 7', b'Region 7'), (b'Region 8', b'Region 8')])),
+                ('is_part_of_series', models.BooleanField(default=False, help_text=b'Is/was the map part of a regularly udpated series?')),
                 ('update_frequency', models.CharField(help_text=b'If the map was part of a series, approximately how frequently was it updated?', max_length=10, choices=[(b'DAILY', b'Daily')])),
-                ('infographics', models.TextField(help_text=b'Infographics or other non-map items in map.', null=True, blank=True)),
+                ('infographics', multiselectfield.db.fields.MultiSelectField(blank=True, max_length=43, null=True, help_text=b'Infographics or other non-map items in map.', choices=[(b'Infographic', b'Infographic'), (b'Pie chart', b'Pie chart'), (b'Bar chart', b'Bar chart'), (b'Table', b'Table'), (b'Other', b'Other')])),
                 ('disclaimer', models.TextField(null=True, blank=True)),
                 ('copyright', models.TextField(null=True, blank=True)),
                 ('has_satellite_data', models.BooleanField(default=False)),
@@ -97,6 +107,8 @@ class Migration(migrations.Migration):
                 ('indirect_datasets', models.TextField(null=True, blank=True)),
                 ('admin_data_source', models.ForeignKey(related_name='admin_source_for', blank=True, to='maps.DataSource', null=True)),
                 ('affected_population_data_source', models.ManyToManyField(related_name='affected_population_source_for', to='maps.DataSource')),
+                ('authors_or_producers', models.ManyToManyField(help_text=b"Name of the organisation(s) that authored the map - thisshould include all organisations acknowledged in the map marginalia by logos/name, or as part of the map title as having authored/produced the map. Organisations attributed with funding the map production should be entered in the 'Donor' field.", related_name='author_or_producer_of', to='maps.Actor')),
+                ('donors', models.ManyToManyField(help_text=b'Organisation(s) attributed with funding the map production.', related_name='donor_to', to='maps.Actor')),
                 ('elevation_data_source', models.ForeignKey(related_name='elevation_source_for', blank=True, to='maps.DataSource', null=True)),
                 ('event', models.ForeignKey(to='maps.Event')),
                 ('health_data_source', models.ForeignKey(related_name='health_source_for', blank=True, to='maps.DataSource', null=True)),

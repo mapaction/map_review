@@ -1,0 +1,274 @@
+[
+{
+  "fields": {
+    "is_cluster": true,
+    "name": "CCM"
+  },
+  "model": "maps.actor",
+  "pk": 1
+},
+{
+  "fields": {
+    "is_cluster": true,
+    "name": "Coordination"
+  },
+  "model": "maps.actor",
+  "pk": 2
+},
+{
+  "fields": {
+    "is_cluster": true,
+    "name": "Early Recovery and Livelihood"
+  },
+  "model": "maps.actor",
+  "pk": 3
+},
+{
+  "fields": {
+    "is_cluster": true,
+    "name": "Education"
+  },
+  "model": "maps.actor",
+  "pk": 4
+},
+{
+  "fields": {
+    "is_cluster": true,
+    "name": "Emergency Telecommunication"
+  },
+  "model": "maps.actor",
+  "pk": 5
+},
+{
+  "fields": {
+    "is_cluster": true,
+    "name": "Food Security and Agriculture"
+  },
+  "model": "maps.actor",
+  "pk": 6
+},
+{
+  "fields": {
+    "is_cluster": true,
+    "name": "Health"
+  },
+  "model": "maps.actor",
+  "pk": 7
+},
+{
+  "fields": {
+    "is_cluster": true,
+    "name": "Logistics"
+  },
+  "model": "maps.actor",
+  "pk": 8
+},
+{
+  "fields": {
+    "is_cluster": true,
+    "name": "Nutrition"
+  },
+  "model": "maps.actor",
+  "pk": 9
+},
+{
+  "fields": {
+    "is_cluster": true,
+    "name": "Protection"
+  },
+  "model": "maps.actor",
+  "pk": 10
+},
+{
+  "fields": {
+    "is_cluster": true,
+    "name": "Shelter"
+  },
+  "model": "maps.actor",
+  "pk": 11
+},
+{
+  "fields": {
+    "is_cluster": true,
+    "name": "WASH"
+  },
+  "model": "maps.actor",
+  "pk": 12
+},
+{
+  "fields": {
+    "is_cluster": false,
+    "name": "DEPED"
+  },
+  "model": "maps.actor",
+  "pk": 13
+},
+{
+  "fields": {
+    "is_cluster": false,
+    "name": "DOH"
+  },
+  "model": "maps.actor",
+  "pk": 14
+},
+{
+  "fields": {
+    "is_cluster": false,
+    "name": "DPWH"
+  },
+  "model": "maps.actor",
+  "pk": 15
+},
+{
+  "fields": {
+    "is_cluster": false,
+    "name": "DSWD"
+  },
+  "model": "maps.actor",
+  "pk": 16
+},
+{
+  "fields": {
+    "is_cluster": false,
+    "name": "FAO"
+  },
+  "model": "maps.actor",
+  "pk": 17
+},
+{
+  "fields": {
+    "is_cluster": false,
+    "name": "GISCORPS"
+  },
+  "model": "maps.actor",
+  "pk": 18
+},
+{
+  "fields": {
+    "is_cluster": false,
+    "name": "IMMAP"
+  },
+  "model": "maps.actor",
+  "pk": 19
+},
+{
+  "fields": {
+    "is_cluster": false,
+    "name": "IOM/OIM"
+  },
+  "model": "maps.actor",
+  "pk": 20
+},
+{
+  "fields": {
+    "is_cluster": false,
+    "name": "MapAction"
+  },
+  "model": "maps.actor",
+  "pk": 21
+},
+{
+  "fields": {
+    "is_cluster": false,
+    "name": "NDRRMC"
+  },
+  "model": "maps.actor",
+  "pk": 22
+},
+{
+  "fields": {
+    "is_cluster": false,
+    "name": "OCHA"
+  },
+  "model": "maps.actor",
+  "pk": 23
+},
+{
+  "fields": {
+    "is_cluster": false,
+    "name": "REACH"
+  },
+  "model": "maps.actor",
+  "pk": 24
+},
+{
+  "fields": {
+    "is_cluster": false,
+    "name": "UNDP"
+  },
+  "model": "maps.actor",
+  "pk": 25
+},
+{
+  "fields": {
+    "is_cluster": false,
+    "name": "UNFPA"
+  },
+  "model": "maps.actor",
+  "pk": 26
+},
+{
+  "fields": {
+    "is_cluster": false,
+    "name": "UNHCR"
+  },
+  "model": "maps.actor",
+  "pk": 27
+},
+{
+  "fields": {
+    "is_cluster": false,
+    "name": "UNICEF"
+  },
+  "model": "maps.actor",
+  "pk": 28
+},
+{
+  "fields": {
+    "is_cluster": false,
+    "name": "UNOSAT"
+  },
+  "model": "maps.actor",
+  "pk": 29
+},
+{
+  "fields": {
+    "is_cluster": false,
+    "name": "WFP"
+  },
+  "model": "maps.actor",
+  "pk": 30
+},
+{
+  "fields": {
+    "is_cluster": false,
+    "name": "WHO"
+  },
+  "model": "maps.actor",
+  "pk": 31
+},
+{
+  "fields": {
+    "is_cluster": false,
+    "name": "USAID"
+  },
+  "model": "maps.actor",
+  "pk": 32
+},
+{
+  "fields": {
+    "is_cluster": false,
+    "name": "DFID"
+  },
+  "model": "maps.actor",
+  "pk": 33
+},
+{
+  "fields": {
+    "is_cluster": false,
+    "name": "World Bank"
+  },
+  "model": "maps.actor",
+  "pk": 34
+}
+]
