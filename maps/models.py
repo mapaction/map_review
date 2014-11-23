@@ -25,6 +25,11 @@ class Actor(models.Model):
     is_cluster = models.BooleanField(default=False)
     name = models.CharField(max_length=200)
 
+    def __unicode__(self):
+        if self.is_cluster:
+            return u"Cluster: " + self.name
+        return self.name
+
 
 class Event(models.Model):
     """Represents an event (disaster)."""
@@ -163,18 +168,18 @@ class Map(models.Model):
     )
     # TODO: Extent indicated to be choice list, with multiples possible.
     # Not sure what these choices are (per map?)
-    extent = models.CharField(
+    extent = MultiSelectField(
         help_text="Geographical extent of the map.",
         choices=make_choices(
             'Country',
             'Affected regions',
+            # FIXME: These look to be specific to Phillipines...
             'Region 4B',
             'Region 5',
             'Region 6',
             'Region 7',
             'Region 8',
         ),
-        max_length=100,
     )
 
     authors_or_producers = models.ManyToManyField(
@@ -409,12 +414,14 @@ class Map(models.Model):
     affected_population_data_source = models.ManyToManyField(
         DataSource,
         related_name="affected_population_source_for",
+        null=True, blank=True,
     )
 
     # Statistical data
     has_statistical_data = models.BooleanField(default=False)
     statistical_data = models.ManyToManyField(
-        StatisticalOrIndicatorData
+        StatisticalOrIndicatorData,
+        null=True, blank=True,
     )
 
     # Needs, activites & gaps

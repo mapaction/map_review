@@ -22,6 +22,7 @@
   <body>
     <div class="container">
       <h1>{% trans "Add map" %}</h1>
+      {{ form.errors }}
       {% crispy form %}
     </div>
     <script type="text/javascript">

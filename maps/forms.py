@@ -3,7 +3,8 @@ from django import forms
 from django.db import models
 
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Fieldset, ButtonHolder, Submit, Field
+from crispy_forms.layout import Layout, Fieldset, Submit, Field
+from crispy_forms.bootstrap import FormActions
 
 from .models import Map
 
@@ -45,6 +46,12 @@ class CreateReviewForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super(CreateReviewForm, self).__init__(*args, **kwargs)
+        for f_nm in ['extent', 'infographics']:
+            # The default widget is a checkbox one, but we want to use chosen
+            # so revert to regular select:
+            self.fields[f_nm].widget = forms.SelectMultiple(
+                choices=self.fields[f_nm].choices
+            )
         self.helper = FormHelper()
 
         geo_field_groups_by_indicator = []
@@ -109,30 +116,42 @@ class CreateReviewForm(forms.ModelForm):
             'affected_population_data_date_latest',
             'affected_population_data_source',
         ))
+
+#       # TODO: Needs activities gaps
 #        field_groups_by_indicator.extend(fields_of(
 #            # TODO: active_clusters
 #            'has_subcluster_information',
 #            'has_activity_detail',
 #            # TODO: assessments
 
+#       # TODO: Additional data sources
+#       # TODO: General data sources
+
         self.helper.layout = Layout(
             Fieldset(
-                'General map information',
+                'Reviewer details',
+                Field('reviewer_name', title='Your name'),
+            ),
+            Fieldset(
+                'Map file/location details',
                 'file_name',
                 'url',
                 'pdf',
+            ),
+            Fieldset(
+                'General map information',
                 'title',
                 'language',
                 Field('event', css_class='chosen'),
-                Field('production_date', type="date"),
+                'production_date',
                 'situational_data_date',
                 'day_offset',
-                'extent',
-                'authors_or_producers',
-                'donors',
+                Field('extent', css_class='chosen'),
+                Field('authors_or_producers', css_class='chosen'),
+                Field('donors', css_class='chosen'),
                 'is_part_of_series',
                 Field('update_frequency', css_class='chosen'),
-                'infographics',
+                Field('infographics', css_class='chosen'),
                 'disclaimer',
                 'copyright',
             ),
@@ -163,5 +182,8 @@ class CreateReviewForm(forms.ModelForm):
                     'has_statistical_data',
                     'statistical_data',
                 )
+            ),
+            FormActions(
+                Submit('save', 'Save changes'),
             )
         )
