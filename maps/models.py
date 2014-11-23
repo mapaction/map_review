@@ -4,15 +4,20 @@ from django_hstore import hstore
 
 from multiselectfield import MultiSelectField
 
-# TODO: Not sure what this should contain?
-UPDATE_FREQUENCY_CHOICES = (
-    ('DAILY', 'Daily'),
-)
-
 
 def make_choices(*choices):
     """Just dupes choices name/value"""
     return [(c, c) for c in choices]
+
+
+DATA_TYPES = make_choices(
+    'Points',
+    'Polygons',
+    'Bar/pie charts',
+    'Raster density',
+    'Infographics',
+    'Other',
+)
 
 
 class Actor(models.Model):
@@ -193,7 +198,12 @@ class Map(models.Model):
     )
     update_frequency = models.CharField(
         max_length=10,
-        choices=UPDATE_FREQUENCY_CHOICES,
+        choices=make_choices(
+            'Daily',
+            'Weekly',
+            'Monthly',
+            'Other',
+        ),
         help_text="If the map was part of a series, approximately how "
         "frequently was it updated?"
     )
@@ -221,7 +231,11 @@ class Map(models.Model):
     has_satellite_data = models.BooleanField(default=False)
     phase_type = models.CharField(
         help_text="Is it pre or post disaster imagery?",
-        max_length=255, choices=(),
+        max_length=255,
+        choices=make_choices(
+            'Pre-disaster',
+            'Post-disaster',
+        ),
         null=True, blank=True,
     )
     satellite_data_date = models.DateField(null=True, blank=True)
@@ -234,7 +248,12 @@ class Map(models.Model):
     # Admin boundaries group
     has_admin_boundaries = models.BooleanField(default=False)
     admin_max_detail_level = models.CharField(
-        choices=(), max_length=50,
+        choices=make_choices(
+            'Regions (Level 1)',
+            'Provinces (Level 2)',
+            'Municipalities (Level 3)',
+            'Barangays (Level 4)',
+        ), max_length=50,
         null=True, blank=True,
     )
     admin_data_source = models.ForeignKey(
@@ -262,7 +281,11 @@ class Map(models.Model):
     # Elevation group
     has_elevation_data = models.BooleanField(default=False)
     elevation_data_type = models.CharField(
-        choices=(), max_length=50,
+        choices=make_choices(
+            'Point heights',
+            'Contour lines',
+            'DEM (continuous surface)',
+        ), max_length=50,
         null=True, blank=True,
     )
     elevation_data_source = models.ForeignKey(
@@ -274,11 +297,16 @@ class Map(models.Model):
     # Settlements group
     has_settlements_data = models.BooleanField(default=False)
     settlements_max_detail_level = models.CharField(
-        choices=(), max_length=50,
+        choices=make_choices(
+            'Main cities',
+            'Towns',
+            'Villages',
+            'Individual buildings',
+        ), max_length=50,
         null=True, blank=True,
     )
     settlements_data_type = models.CharField(
-        choices=(), max_length=50,
+        choices=DATA_TYPES, max_length=50,
         null=True, blank=True,
     )
     settlements_data_source = models.ForeignKey(
@@ -347,7 +375,7 @@ class Map(models.Model):
     # Population group
     has_population_data = models.BooleanField(default=False)
     population_data_type = models.CharField(
-        choices=(),
+        choices=DATA_TYPES,
         max_length=50,
         null=True, blank=True,
     )

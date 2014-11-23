@@ -25,6 +25,7 @@ def fields_of(indicator, *fields):
         model_field = Map._meta.get_field_by_name(f)[0]
         if any([
                 isinstance(model_field, models.ManyToManyField),
+                isinstance(model_field, models.ForeignKey),
                 (isinstance(model_field, models.CharField) and
                  hasattr(model_field, 'choices'))]):
             kwargs['css_class'] = 'chosen'
@@ -97,7 +98,7 @@ class CreateReviewForm(forms.ModelForm):
             'population_data_type',
             'population_data_source',
             'population_data_date_earliest',
-            'population_data_date_earliest',
+            'population_data_date_latest',
         ))
 
         pop_field_groups_by_indicator.extend(fields_of(
@@ -128,7 +129,7 @@ class CreateReviewForm(forms.ModelForm):
                 'day_offset',
                 'extent',
                 'authors_or_producers',
-                'donor',
+                'donors',
                 'is_part_of_series',
                 Field('update_frequency', css_class='chosen'),
                 'infographics',
