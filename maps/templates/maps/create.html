@@ -22,7 +22,12 @@
   <body>
     <div class="container">
       <h1>{% trans "Add map" %}</h1>
-      {{ form.errors }}
+      {% if form.errors %}
+      <div class="alert alert-danger" role="alert">
+        There were some errors, or missing data - please check below.
+      </div>
+      {% endif %}
+
       {% crispy form %}
     </div>
     <script type="text/javascript">
@@ -35,14 +40,20 @@
           $('[data-indicator]').each(
             function (ix, el) {
               var indicator = $(el).data('indicator');
-              var group_el = $('[data-depends-on="' + indicator + '"]').closest('div.form-group');
-              // initially hide fields that depend on the indicator being present
-              $('div.' + indicator).toggle();
+              var well = $('<div class="well well-sm well_' + indicator + '"></div>');
+              var group_el = $(el).closest('div.form-group');
+              well.insertAfter(group_el);
+              $('.' + indicator).appendTo(well);
+
+              if (!$(el).attr('checked')) {
+                // initially hide fields that depend on the indicator being present
+                $('div.well_' + indicator).toggle();
+              }
 
               $(el).bind('change', function(ev) {
                 // toggle the dependent fields with the changing of indicator state
                 var indicator = $(ev.target).data('indicator');
-                $('div.' + indicator).toggle();
+                $('div.well_' + indicator).toggle();
               });
             }
           );
