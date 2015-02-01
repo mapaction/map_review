@@ -1,0 +1,12 @@
+
+.form-control {
+    width: 48%;
+    display: inline-block;
+    vertical-align: middle;
+}
+.help-block {
+    width: 48%;
+    display: inline-block;
+    vertical-align: middle;
+    padding: 5px;
+}
