@@ -1,5 +1,7 @@
 from django.db import models
 from django.core.validators import RegexValidator
+from django.core.urlresolvers import reverse
+
 from django_hstore import hstore
 
 from multiselectfield import MultiSelectField
@@ -526,3 +528,10 @@ class Map(models.Model):
 #        AdditionalDataset
 #    )
     indirect_datasets = models.TextField(blank=True, null=True)
+
+    def get_absolute_url(self):
+        return reverse('maps_detail', kwargs={'pk': self.pk})
+
+    def get_reviewer_name_sensitive(self):
+        """Don't show whole name to the world."""
+        return self.reviewer_name.split(' ')[0][:10]
