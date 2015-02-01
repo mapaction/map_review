@@ -457,6 +457,23 @@ class Map(models.Model):
         null=True, blank=True,
     )
 
+    # Vulnerability block
+    has_vulnerable_population_data = models.BooleanField(
+        default=False,
+        help_text="Does the map show information on specific vulnerabilities of the population." 
+    )
+    vulnerable_population_data_date_earliest = models.DateField(
+        null=True, blank=True,
+    )
+    vulnerable_population_data_date_latest = models.DateField(
+        null=True, blank=True,
+    )
+    vulnerable_population_data_source = models.ManyToManyField(
+        DataSource,
+        related_name="vulnerability_data_source_for",
+        null=True, blank=True,
+    ) 
+    
     # Statistical data
     has_statistical_data = models.BooleanField(default=False)
     statistical_data = models.ManyToManyField(
