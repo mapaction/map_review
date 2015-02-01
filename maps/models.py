@@ -76,8 +76,9 @@ class Event(models.Model):
         )]
     )
     def __unicode__(self):
-         return("{0}, {1}".format(self.get_event_type_display(),
-                                  self.glide_number))
+        return("{0}, {1}".format(
+            self.get_event_type_display(), self.glide_number
+        ))
 
 
 class DataSource(models.Model):
