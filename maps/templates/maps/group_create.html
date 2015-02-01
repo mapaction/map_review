@@ -1,0 +1,9 @@
+{% extends "maps/create.html" %}
+{% load i18n %}
+
+{% block title %}&ndash; {% trans "Add Map to Review Group" %} {{ group.name }}{% endblock title %}
+
+{% block intro %}
+{{ block.super }}
+{{ group.top_copy|safe }}
+{% endblock intro %}

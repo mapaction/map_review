@@ -2,9 +2,10 @@
 from django.views.generic import CreateView, ListView, DetailView
 from django.contrib import messages
 from django.utils.translation import ugettext as _
+from django.shortcuts import get_object_or_404
 
 from .forms import CreateReviewForm
-from .models import Map
+from .models import Map, ReviewGroup
 
 
 class CreateReview(CreateView):
@@ -19,6 +20,33 @@ class CreateReview(CreateView):
             _('Thanks for reviewing this map!')
         )
         return super(CreateReview, self).form_valid(form)
+
+
+class CreateGroupReview(CreateReview):
+    """Review with group info set."""
+    template_name = 'maps/group_create.html'
+
+    @property
+    def group(self):
+        if not hasattr(self, '_group'):
+            setattr(
+                self,
+                '_group',
+                get_object_or_404(ReviewGroup, slug=self.kwargs['group_slug'])
+            )
+        return self._group
+
+    def get_context_data(self, **kwargs):
+        ctx = super(CreateGroupReview, self).get_context_data(**kwargs)
+        ctx['group'] = self.group
+        return ctx
+
+    def get_form_kwargs(self):
+        kwargs = super(CreateGroupReview, self).get_form_kwargs()
+        initial = kwargs.get('initial', {})
+        initial['event'] = self.group.event
+        kwargs['initial'] = initial
+        return kwargs
 
 
 class MapList(ListView):

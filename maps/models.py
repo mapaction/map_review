@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import RegexValidator
 from django.core.urlresolvers import reverse
+from django.contrib.auth.models import User
 
 from django_hstore import hstore
 
@@ -128,6 +129,25 @@ class StatisticalOrIndicatorData(models.Model):
         related_name="stats_source_for",
         null=True, blank=True,
     )
+
+
+class ReviewGroup(models.Model):
+    """For creating specific event reviews (eg. Haiyan) w/custom settings."""
+    contact = models.ForeignKey(
+        User, help_text="Admin contact who should deal with data requests.")
+    top_copy = models.TextField(
+        help_text="Add HTML here about this set of reviews.")
+    event = models.ForeignKey(
+        Event, help_text="Which event are these reviews for?")
+    name = models.CharField(
+        max_length=100,
+        help_text="Friendly name for this grouping "
+        "(eg. Typhoon Haiyan - Philippines)"
+    )
+    slug = models.SlugField()
+
+    def __unicode__(self):
+        return u"{} -- {}".format(self.name, self.event.glide_number)
 
 
 class Map(models.Model):
