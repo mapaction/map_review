@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import RegexValidator
 from django.core.urlresolvers import reverse
+from django.contrib.auth.models import User
 
 from django_hstore import hstore
 
@@ -134,8 +135,44 @@ class StatisticalOrIndicatorData(models.Model):
     )
 
 
+class ReviewGroup(models.Model):
+    """For creating specific event reviews (eg. Haiyan) w/custom settings."""
+    contact = models.ForeignKey(
+        User, help_text="Admin contact who should deal with data requests.")
+    top_copy = models.TextField(
+        help_text="Add HTML here about this set of reviews.")
+    event = models.ForeignKey(
+        Event, help_text="Which event are these reviews for?")
+    name = models.CharField(
+        max_length=100,
+        help_text="Friendly name for this grouping "
+        "(eg. Typhoon Haiyan - Philippines)"
+    )
+    slug = models.SlugField()
+
+    # TODO: This really ought to be a M2M to some sensible regions table.
+    extent_options = models.TextField(
+        help_text="Specify what should appear in the Extent dropdown "
+        "(one per line)."
+    )
+
+    def __unicode__(self):
+        return u"{} -- {}".format(self.name, self.event.glide_number)
+
+    def get_extent_options(self):
+        return [
+            (x, x) for x in self.extent_options.split('\n')
+        ]
+
+
+class ExtentMultiSelectField(MultiSelectField):
+    def validate(self, value, model_instance):
+        pass
+
+
 class Map(models.Model):
     """Storage of a Map object."""
+    review_created_on = models.DateTimeField(auto_now_add=True)
     reviewer_name = models.CharField(max_length=300)
     file_name = models.CharField(
         max_length=300, blank=True, null=True,
@@ -172,20 +209,10 @@ class Map(models.Model):
     day_offset = models.PositiveIntegerField(
         help_text="Number of days between disaster onset and map production."
     )
-    # TODO: Extent indicated to be choice list, with multiples possible.
-    # Not sure what these choices are (per map?)
-    extent = MultiSelectField(
+    # TODO: This really ought to be a M2M to some sensible regions table.
+    extent = ExtentMultiSelectField(
         help_text="Geographical extent of the map.",
-        choices=make_choices(
-            'Country',
-            'Affected regions',
-            # FIXME: These look to be specific to Phillipines...
-            'Region 4B',
-            'Region 5',
-            'Region 6',
-            'Region 7',
-            'Region 8',
-        ),
+        choices=make_choices('Country', 'Affected areas')
     )
 
     authors_or_producers = models.ManyToManyField(

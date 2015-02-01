@@ -30,6 +30,10 @@ Now syncdb and migrate:
     $- ./manage.py syncdb
     $- ./manage.py migrate
 
+Add fixtures:
+
+    $- ./manage.py loaddata maps/fixtures/actors.json
+
 ## Running the tool
 
     $- export DJANGO_SETTINGS_MODULE=map_review.settings.devel

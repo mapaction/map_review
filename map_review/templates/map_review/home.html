@@ -1,0 +1,30 @@
+{% extends "map_review/base.html" %}
+{% load i18n %}
+
+{% block main_content %}
+<h1>{% trans "MapAction Map Review Tool" %}</h1>
+
+<p>{% blocktrans %}
+Welcome to the MapAction Map Review Tool. Below you will find review groups and recently reviewed maps.
+{% endblocktrans %}</p>
+
+<h2>{% trans "Review groups" %}</h2>
+<p>{% blocktrans %}
+Select one of the review groups to start adding reviews.
+{% endblocktrans %}</p>
+<ul>
+{% for group in groups %}
+<li><a href="{% url "create_review" group_slug=group.slug %}">{{ group.name }} ({{ group.event }})</a></li>
+{% endfor %}
+</ul>
+
+<h2>{% trans "Recent reviews" %}</h2>
+<p>{% blocktrans %}
+Click a reviewed map to see the metadata.
+{% endblocktrans %}</p>
+<ul>
+{% for map in maps %}
+<li><a href="{% url "maps_detail" pk=map.pk %}">{{ map.title }}</a></li>
+{% endfor %}
+</ul>
+{% endblock main_content %}

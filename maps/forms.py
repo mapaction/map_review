@@ -45,6 +45,7 @@ class CreateReviewForm(forms.ModelForm):
         model = Map
 
     def __init__(self, *args, **kwargs):
+        group = kwargs.pop('group', None)
         super(CreateReviewForm, self).__init__(*args, **kwargs)
         # The default widget is a checkbox one, but we want to use chosen
         # so revert to regular select:
@@ -195,3 +196,9 @@ class CreateReviewForm(forms.ModelForm):
                 Submit('save', 'Save changes'),
             )
         )
+        # If this is a grouped review, lock some fields
+        lock_for_group = self.initial and 'event' in self.initial
+        if lock_for_group:
+            self.fields['event'].widget.attrs['readonly'] = True
+            self.fields['event'].widget.attrs['disabled'] = True
+            self.fields['extent'].choices = group.get_extent_options()
