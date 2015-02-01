@@ -146,8 +146,24 @@ class ReviewGroup(models.Model):
     )
     slug = models.SlugField()
 
+    # TODO: This really ought to be a M2M to some sensible regions table.
+    extent_options = models.TextField(
+        help_text="Specify what should appear in the Extent dropdown "
+        "(one per line)."
+    )
+
     def __unicode__(self):
         return u"{} -- {}".format(self.name, self.event.glide_number)
+
+    def get_extent_options(self):
+        return [
+            (x, x) for x in self.extent_options.split('\n')
+        ]
+
+
+class ExtentMultiSelectField(MultiSelectField):
+    def validate(self, value, model_instance):
+        pass
 
 
 class Map(models.Model):
@@ -188,20 +204,9 @@ class Map(models.Model):
     day_offset = models.PositiveIntegerField(
         help_text="Number of days between disaster onset and map production."
     )
-    # TODO: Extent indicated to be choice list, with multiples possible.
-    # Not sure what these choices are (per map?)
-    extent = MultiSelectField(
+    # TODO: This really ought to be a M2M to some sensible regions table.
+    extent = ExtentMultiSelectField(
         help_text="Geographical extent of the map.",
-        choices=make_choices(
-            'Country',
-            'Affected regions',
-            # FIXME: These look to be specific to Phillipines...
-            'Region 4B',
-            'Region 5',
-            'Region 6',
-            'Region 7',
-            'Region 8',
-        ),
     )
 
     authors_or_producers = models.ManyToManyField(

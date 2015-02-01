@@ -3,7 +3,17 @@
 
 {% block title %}&ndash; {% trans "Add Map to Review Group" %} {{ group.name }}{% endblock title %}
 
+{% block header %}
+{% blocktrans with group.name as name %}
+Add map to review group '{{ name }}'
+{% endblocktrans %}
+{% endblock %}
+
 {% block intro %}
+<p><strong>{% blocktrans with fullname=group.contact.get_fullname email=group.contact.email %}
+    Please send questions about this review to {{ fullname }} (<a href="mailto:{{ email }}">{{ email }}</a>)
+    {% endblocktrans %}
+</strong></p>
 {{ block.super }}
 {{ group.top_copy|safe }}
 {% endblock intro %}

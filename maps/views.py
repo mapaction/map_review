@@ -46,7 +46,13 @@ class CreateGroupReview(CreateReview):
         initial = kwargs.get('initial', {})
         initial['event'] = self.group.event
         kwargs['initial'] = initial
+        kwargs['group'] = self.group
         return kwargs
+
+    def post(self, *args, **kwargs):
+        # We disable the field which means it is not sent in the POST, so set it back
+        self.request.POST['event'] = self.group.event.id
+        return super(CreateGroupReview, self).post(*args, **kwargs)
 
 
 class MapList(ListView):

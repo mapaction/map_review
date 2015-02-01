@@ -10,7 +10,7 @@
 {% endblock extra_css %}
 
 {% block main_content %}
-<h1>{% trans "Add map" %}</h1>
+<h1>{% block header %}{% trans "Add map" %}{% endblock %}</h1>
 {% block intro %}
 <p>There may be cases where a dataset could relate to two or more questions.
 e.g. a map showing cash transfer program data would need both the 'Activity'
