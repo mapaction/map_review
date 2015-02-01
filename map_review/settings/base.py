@@ -18,6 +18,12 @@ DEBUG = False
 
 TEMPLATE_DEBUG = DEBUG
 
+TEMPLATE_LOADERS = (
+    'django.template.loaders.filesystem.Loader',
+    'django.template.loaders.app_directories.Loader',
+    'django.template.loaders.eggs.Loader',
+)
+
 ALLOWED_HOSTS = []
 
 # Application definition
@@ -32,6 +38,7 @@ INSTALLED_APPS = (
 
     'crispy_forms',
     'multiselectfield',
+    'django_hstore',
 
     'maps',
 )
