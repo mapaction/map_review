@@ -12,12 +12,27 @@ what vital datasets are not being used etc etc.
 Fork the repo (`mapaction/map_review`) and submit a Pull Request.
 
 
-## Running the tool
-
+## Setup
 
     $- pip install requirements.txt
     $- export DJANGO_SETTINGS_MODULE=map_review.settings.devel
+
+Create a test database (Postgres):
+
+    $- psql -h localhost
+    # create database map_review template template1;
+    # \c map_review
+    # create extension postgis;
+    # create extension hstore;
+
+Now syncdb and migrate:
+
     $- ./manage.py syncdb
+    $- ./manage.py migrate
+
+## Running the tool
+
+    $- export DJANGO_SETTINGS_MODULE=map_review.settings.devel
     $- ./manage.py migrate
     $- ./manage.py runserver 0.0.0.0:8080
 

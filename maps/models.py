@@ -1,5 +1,7 @@
 from django.db import models
 from django.core.validators import RegexValidator
+from django.core.urlresolvers import reverse
+
 from django_hstore import hstore
 
 from multiselectfield import MultiSelectField
@@ -73,10 +75,14 @@ class Event(models.Model):
             message="That doesn't look like a valid GLIDE number."
         )]
     )
+    def __unicode__(self):
+        return("{0}, {1}".format(
+            self.get_event_type_display(), self.glide_number
+        ))
 
 
 class DataSource(models.Model):
-    """Satellite name and sensor type."""
+    """Any of various data sources. Use meta to store extra info."""
     source_type = models.CharField(
         choices=(
             ('SATELLITE', 'Satellite data'),
@@ -86,7 +92,7 @@ class DataSource(models.Model):
             ('ELEVATION', 'Elevation'),
             ('SETTLEMENTS', 'Settlements'),
             ('HEALTH', 'Health facilities'),
-            ('SHCOOLS', 'Schools'),
+            ('SCHOOLS', 'Schools'),
             ('SHELTER', 'Shelter'),
             ('POPULATION', 'Population'),
             ('IMPACT', 'Impact indicators/statistics'),
@@ -99,7 +105,7 @@ class DataSource(models.Model):
     meta = hstore.DictionaryField()
 
     def __unicode__(self):
-        return "{0} - {1}".format(self.name, self.sensor_type)
+        return "{0} - {1}".format(self.source_type, self.name)
 
 
 class StatisticalOrIndicatorData(models.Model):
@@ -460,7 +466,7 @@ class Map(models.Model):
     # Vulnerability block
     has_vulnerable_population_data = models.BooleanField(
         default=False,
-        help_text="Does the map show information on specific vulnerabilities of the population." 
+        help_text="Does the map show information on specific vulnerabilities of the population."
     )
     vulnerable_population_data_date_earliest = models.DateField(
         null=True, blank=True,
@@ -472,8 +478,8 @@ class Map(models.Model):
         DataSource,
         related_name="vulnerability_data_source_for",
         null=True, blank=True,
-    ) 
-    
+    )
+
     # Statistical data
     has_statistical_data = models.BooleanField(default=False)
     statistical_data = models.ManyToManyField(
@@ -526,3 +532,10 @@ class Map(models.Model):
 #        AdditionalDataset
 #    )
     indirect_datasets = models.TextField(blank=True, null=True)
+
+    def get_absolute_url(self):
+        return reverse('maps_detail', kwargs={'pk': self.pk})
+
+    def get_reviewer_name_sensitive(self):
+        """Don't show whole name to the world."""
+        return self.reviewer_name.split(' ')[0][:10]

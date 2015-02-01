@@ -1,69 +1,56 @@
-<!DOCTYPE html>
+{% extends "maps/base.html" %}
 {% load crispy_forms_tags %}
 {% load static %}
 {% load i18n %}
-<html>
-  <head>
-    <title></title>
-    <meta charset='utf-8'> 
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/css/bootstrap-theme.min.css">
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/chosen/1.1.0/chosen.min.css">
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker.min.css">
-    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/css/datepicker3.min.css">
-    <link rel="stylesheet" href="{% static "maps/create.css" %}">
 
+{% block title %}&ndash; {% trans "Add Map" %}{% endblock title %}
 
-    <script src="//code.jquery.com/jquery-2.1.1.min.js"></script>
-    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.2/jquery-ui.min.js"> </script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/chosen/1.1.0/chosen.jquery.min.js"></script>
-    <script src="//cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.3.0/js/bootstrap-datepicker.js"></script>
+{% block extra_css %}
+<link rel="stylesheet" href="{% static "maps/create.css" %}">
+{% endblock extra_css %}
 
-    <!-- Latest compiled and minified JavaScript -->
-    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
-  </head>
-  <body>
-    <div class="container">
-      <h1>{% trans "Add map" %}</h1>
-      {% if form.errors %}
-      <div class="alert alert-danger" role="alert">
-        There were some errors, or missing data - please check below.
-      </div>
-      {% endif %}
+{% block main_content %}
+<h1>{% trans "Add map" %}</h1>
+{% if form.errors %}
+<div class="alert alert-danger" role="alert">
+  There were some errors, or missing data - please check below.
+</div>
+{% endif %}
 
-      {% crispy form %}
-    </div>
-    <script type="text/javascript">
-      $(document).ready(
-        function() {
+{% crispy form %}
+{% endblock main_content %}
 
-          $(".chosen").chosen();
-          $('.dateinput').datepicker();
+{% block scripts %}
+<script type="text/javascript">
+  $(document).ready(
+    function() {
 
-          $('[data-indicator]').each(
-            function (ix, el) {
-              var indicator = $(el).data('indicator');
-              var well = $('<div class="well well-sm well_' + indicator + '"></div>');
-              var group_el = $(el).closest('div.form-group');
-              well.insertAfter(group_el);
-              $('.' + indicator).appendTo(well);
+      $(".chosen").chosen();
+      $('.dateinput').datepicker();
 
-              if (!$(el).attr('checked')) {
-                // initially hide fields that depend on the indicator being present
-                $('div.well_' + indicator).toggle();
-              }
+      $('[data-indicator]').each(
+        function (ix, el) {
+          var indicator = $(el).data('indicator');
+          var well = $('<div class="well well-sm well_' + indicator + '"></div>');
+          var group_el = $(el).closest('div.form-group');
+          well.insertAfter(group_el);
+          $('.' + indicator).appendTo(well);
 
-              $(el).bind('change', function(ev) {
-                // toggle the dependent fields with the changing of indicator state
-                var indicator = $(ev.target).data('indicator');
-                $('div.well_' + indicator).toggle();
-              });
-            }
-          );
+          if (!$(el).attr('checked')) {
+            // initially hide fields that depend on the indicator being present
+            $('div.well_' + indicator).toggle();
+          }
+
+          $(el).bind('change', function(ev) {
+            // toggle the dependent fields with the changing of indicator state
+            var indicator = $(ev.target).data('indicator');
+            $('div.well_' + indicator).toggle();
+          });
         }
       );
-    </script>
-  </body>
-</html>
+    }
+  );
+</script>
+{% endblock scripts %}
 
 

@@ -1,0 +1,20 @@
+{% extends "maps/base.html" %}
+{% load static %}
+{% load i18n %}
+
+{% block title %}&ndash; {% trans "Map List" %}{% endblock title %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static "maps/list.css" %}">
+{% endblock extra_css %}
+
+{% block main_content %}
+<h1>{% trans "Map List" %}</h1>
+<ul>
+{% for map in object_list %}
+  <li><a href="{% url "maps_detail" pk=map.id %}">{{ map.title }}</a></li>
+{% empty %}
+  <li>{% trans "No maps yet." %}</li>
+{% endfor %}
+</ul>
+{% endblock main_content %}

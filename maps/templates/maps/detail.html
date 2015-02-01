@@ -1,0 +1,57 @@
+{% extends "maps/base.html" %}
+{% load static %}
+{% load lookup %}
+{% load i18n %}
+
+{% block title %}&ndash; {% trans "Detail:" %} {{ map.title }}{% endblock title %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static "maps/list.css" %}">
+{% endblock extra_css %}
+
+{% block main_content %}
+<h1>{{ map.title }}</h1>
+{% comment %}
+{# TODO: this needs laying out properly but for now I've just made a really stupid iterator... #}
+<div class="well">
+  <dl>
+    <dt>{% trans "Reviewer" %}</dt>
+    <dd>
+    {% if request.user.is_authenticated %}
+    {% blocktrans with reviewer=map.reviewer_name %}{{ reviewer }}{% endblocktrans %}
+    {% else %}
+    {% blocktrans with reviewer=map.get_reviewer_name_sensitive %}{{ reviewer }}&hellip;{% endblocktrans %}
+    {% endif %}
+    </dd>
+  </dl>
+</div>
+{% endcomment %}
+
+{% for group in form.helper.layout %}
+{% if group.legend %}
+<div class="well">
+  <h3>{{ group.legend }}</h3>
+  <dl>
+  {% for field in group.fields %}
+  {% with field.get_field_names.0.1|default:field as field_name %}
+    <dt>{{ field_name }}</dt>
+    <dd>{% with map|obj_lookup:field_name as field_value %}
+    {% if field_value.is_m2m or field_value.is_list %}
+    {% if field_value.all %}
+    <ul>{% for item in field_value.all %}<li>{{ item }}</li>{% endfor %}</ul>
+    {% else %}
+    None
+    {% endif %}
+    {% else %}{{ field_value }}{% endif %}
+    {% endwith %}
+    </dd>
+  {% endwith %}
+  {% endfor %}
+  </dl>
+</div>
+{% endif %}
+{% endfor %}
+
+<div>
+</div>
+{% endblock main_content %}
