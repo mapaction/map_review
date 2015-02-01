@@ -168,6 +168,7 @@ class ExtentMultiSelectField(MultiSelectField):
 
 class Map(models.Model):
     """Storage of a Map object."""
+    review_created_on = models.DateTimeField(auto_now_add=True)
     reviewer_name = models.CharField(max_length=300)
     file_name = models.CharField(
         max_length=300, blank=True, null=True,
