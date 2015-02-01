@@ -75,6 +75,9 @@ class Event(models.Model):
             message="That doesn't look like a valid GLIDE number."
         )]
     )
+    def __unicode__(self):
+         return("{0}, {1}".format(self.get_event_type_display(),
+                                  self.glide_number))
 
 
 class DataSource(models.Model):
@@ -88,7 +91,7 @@ class DataSource(models.Model):
             ('ELEVATION', 'Elevation'),
             ('SETTLEMENTS', 'Settlements'),
             ('HEALTH', 'Health facilities'),
-            ('SHCOOLS', 'Schools'),
+            ('SCHOOLS', 'Schools'),
             ('SHELTER', 'Shelter'),
             ('POPULATION', 'Population'),
             ('IMPACT', 'Impact indicators/statistics'),
