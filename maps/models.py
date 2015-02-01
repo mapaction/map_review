@@ -207,6 +207,7 @@ class Map(models.Model):
     # TODO: This really ought to be a M2M to some sensible regions table.
     extent = ExtentMultiSelectField(
         help_text="Geographical extent of the map.",
+        choices=make_choices('Country', 'Affected areas')
     )
 
     authors_or_producers = models.ManyToManyField(
