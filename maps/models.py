@@ -79,7 +79,7 @@ class Event(models.Model):
 
 
 class DataSource(models.Model):
-    """Satellite name and sensor type."""
+    """Any of various data sources. Use meta to store extra info."""
     source_type = models.CharField(
         choices=(
             ('SATELLITE', 'Satellite data'),
@@ -102,7 +102,7 @@ class DataSource(models.Model):
     meta = hstore.DictionaryField()
 
     def __unicode__(self):
-        return "{0} - {1}".format(self.name, self.sensor_type)
+        return "{0} - {1}".format(self.source_type, self.name)
 
 
 class StatisticalOrIndicatorData(models.Model):
@@ -482,7 +482,7 @@ class Map(models.Model):
     # Vulnerability block
     has_vulnerable_population_data = models.BooleanField(
         default=False,
-        help_text="Does the map show information on specific vulnerabilities of the population." 
+        help_text="Does the map show information on specific vulnerabilities of the population."
     )
     vulnerable_population_data_date_earliest = models.DateField(
         null=True, blank=True,
@@ -494,8 +494,8 @@ class Map(models.Model):
         DataSource,
         related_name="vulnerability_data_source_for",
         null=True, blank=True,
-    ) 
-    
+    )
+
     # Statistical data
     has_statistical_data = models.BooleanField(default=False)
     statistical_data = models.ManyToManyField(
