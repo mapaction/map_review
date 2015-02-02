@@ -528,7 +528,7 @@ class Map(models.Model):
     # Affected population coping mechanisms block
     has_affected_pop_coping_mechanisms_data = models.BooleanField(
         default=False,
-        help_text="Does the map show information on coping mechanisms of the"
+        help_text="Does the map show information on coping mechanisms of the "
         "affected population/community action?",
         verbose_name="has affected population coping mechanisms data"
     )
