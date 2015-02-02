@@ -32,6 +32,24 @@ def fields_of(indicator, *fields):
                  hasattr(model_field, 'choices'))]):
             kwargs['css_class'] = 'chosen'
 
+        # Make date pickers pretty
+        if f.endswith('date'):
+            kwargs['template'] = 'maps/date_component.html'
+
+        # Make date ranges look a bit more rangey
+        if (f.endswith('date_earliest') and
+                f.replace('earliest', 'latest') in fields):
+            kwargs['template'] = 'maps/date_range.html'
+            kwargs['title'] = model_field.verbose_name.replace(
+                ' earliest', '').title()
+            kwargs['data_latest'] = f.replace('earliest', 'latest')
+            kwargs['css_class'] = 'date-earliest'
+
+        if (f.endswith('date_latest') and
+                f.replace('latest', 'earliest') in fields):
+            kwargs['type'] = 'hidden'
+            kwargs['data_earliest'] = f.replace('latest', 'earliest')
+
         ret.append(
             Field(
                 f, data_depends_on=indicator, wrapper_class=indicator,
@@ -56,6 +74,7 @@ class CreateReviewForm(forms.ModelForm):
                     choices=self.fields[f].choices
                 )
         self.helper = FormHelper()
+        self.helper.help_text_inline = True
 
         geo_field_groups_by_indicator = []
         geo_field_groups_by_indicator.extend(fields_of(
@@ -160,8 +179,10 @@ class CreateReviewForm(forms.ModelForm):
                 'title',
                 'language',
                 Field('event', css_class='chosen'),
-                'production_date',
-                'situational_data_date',
+                Field('production_date', template="maps/date_component.html"),
+                Field(
+                    'situational_data_date',
+                    template="maps/date_component.html"),
                 'day_offset',
                 Field('extent', css_class='chosen'),
                 Field('authors_or_producers', css_class='chosen'),
@@ -216,3 +237,8 @@ class CreateReviewForm(forms.ModelForm):
             if (isinstance(f, forms.MultipleChoiceField) or
                     isinstance(f, forms.ModelMultipleChoiceField)):
                 f.widget.attrs['data-placeholder'] = _('Select Option(s)')
+            if field.endswith('date_earliest'):
+                f.label = f.label.replace(' earliest', '')
+                f.help_text = _(
+                    "Enter earliest and latest date, or just one or the other."
+                )
