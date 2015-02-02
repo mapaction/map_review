@@ -126,6 +126,13 @@ class CreateReviewForm(forms.ModelForm):
             'vulnerable_population_data_source',
         ))
 
+        pop_field_groups_by_indicator.extend(fields_of(
+            'has_population_movements_data',
+            'population_movements_data_date_earliest',
+            'population_movements_data_date_latest',
+            'population_movements_data_source',
+        ))
+
 #       # TODO: Needs activities gaps
 #        field_groups_by_indicator.extend(fields_of(
 #            # TODO: active_clusters
