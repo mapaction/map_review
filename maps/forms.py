@@ -128,6 +128,13 @@ class CreateReviewForm(forms.ModelForm):
         ))
 
         pop_field_groups_by_indicator.extend(fields_of(
+            'has_affected_pop_coping_mechanisms_data',
+            'affected_pop_coping_mechanisms_data_date_earliest',
+            'affected_pop_coping_mechanisms_data_date_latest',
+            'affected_pop_coping_mechanisms_data_source',
+        ))
+
+        pop_field_groups_by_indicator.extend(fields_of(
             'has_population_movements_data',
             'population_movements_data_date_earliest',
             'population_movements_data_date_latest',

@@ -525,6 +525,24 @@ class Map(models.Model):
         related_name="population_movements_source_for",
     )
 
+    # Affected population coping mechanisms block
+    has_affected_pop_coping_mechanisms_data = models.BooleanField(
+        default=False,
+        help_text="Does the map show information on coping mechanisms of the"
+        "affected population/community action?",
+        verbose_name="has affected population coping mechanisms data"
+    )
+    affected_pop_coping_mechanisms_data_date_earliest = models.DateField(
+        null=True, blank=True,
+    )
+    affected_pop_coping_mechanisms_data_date_latest = models.DateField(
+        null=True, blank=True,
+    )
+    affected_pop_coping_mechanisms_data_source = models.ManyToManyField(
+        DataSource,
+        related_name="affected_population_coping_mechanisms_source_for"
+    )
+
     # Statistical data
     has_statistical_data = models.BooleanField(default=False)
     statistical_data = models.ManyToManyField(
