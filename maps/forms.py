@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from django import forms
 from django.db import models
+from django.utils.translation import ugettext_lazy as _
 
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout, Fieldset, Submit, Field
@@ -209,3 +210,9 @@ class CreateReviewForm(forms.ModelForm):
             self.fields['event'].widget.attrs['readonly'] = True
             self.fields['event'].widget.attrs['disabled'] = True
             self.fields['extent'].choices = group.get_extent_options()
+
+        for field in self.fields:
+            f = self.fields[field]
+            if (isinstance(f, forms.MultipleChoiceField) or
+                    isinstance(f, forms.ModelMultipleChoiceField)):
+                f.widget.attrs['data-placeholder'] = _('Select Option(s)')
