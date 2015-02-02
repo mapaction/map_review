@@ -76,6 +76,7 @@ class Event(models.Model):
             message="That doesn't look like a valid GLIDE number."
         )]
     )
+
     def __unicode__(self):
         return("{0}, {1}".format(
             self.get_event_type_display(), self.glide_number
@@ -493,7 +494,8 @@ class Map(models.Model):
     # Vulnerability block
     has_vulnerable_population_data = models.BooleanField(
         default=False,
-        help_text="Does the map show information on specific vulnerabilities of the population?"
+        help_text="Does the map show information on specific vulnerabilities "
+        "the population?"
     )
     vulnerable_population_data_date_earliest = models.DateField(
         null=True, blank=True,
@@ -522,7 +524,6 @@ class Map(models.Model):
         DataSource,
         related_name="population_movements_source_for",
     )
-
 
     # Statistical data
     has_statistical_data = models.BooleanField(default=False)
