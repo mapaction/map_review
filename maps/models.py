@@ -543,6 +543,45 @@ class Map(models.Model):
         related_name="affected_population_coping_mechanisms_source_for"
     )
 
+    # Severity, analyses and evolution group
+    # Severity, and composite analysis block
+    has_severity_data = models.BooleanField(
+        default=False,
+        help_text="Does the map show information of severity of impact?"
+    )
+    has_composite_analysis_of_severity_data = models.BooleanField(
+        default=False,
+        help_text="If so, does the map show information on severity across "
+        "multiple indicators?"
+    )
+    severity_data_date_earliest = models.DateField(
+        null=True, blank=True,
+    )
+    severity_data_date_latest = models.DateField(
+        null=True, blank=True,
+    )
+    severity_data_source = models.ManyToManyField(
+        DataSource,
+        related_name="severity_data_source_for",
+    )
+
+    # Trends/Evolution block
+    has_trends_evolution_data = models.BooleanField(
+        default=False,
+        help_text="Does the map show analysis of trends/potential evolution "
+        "of trends/potential evolution of the emergency?"
+    )
+    trends_evolution_data_date_earliest = models.DateField(
+        null=True, blank=True,
+    )
+    trends_evolution_data_date_latest = models.DateField(
+        null=True, blank=True,
+    )
+    trends_evolution_data_source = models.ManyToManyField(
+        DataSource,
+        related_name="trends_evolution_data_source_for",
+    )
+
     # Statistical data
     has_statistical_data = models.BooleanField(default=False)
     statistical_data = models.ManyToManyField(

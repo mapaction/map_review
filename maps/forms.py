@@ -141,6 +141,22 @@ class CreateReviewForm(forms.ModelForm):
             'population_movements_data_source',
         ))
 
+        severity_field_groups_by_indicator = []
+        severity_field_groups_by_indicator.extend(fields_of(
+            'has_severity_data',
+            'has_composite_analysis_of_severity_data',
+            'severity_data_date_earliest',
+            'severity_data_date_latest',
+            'severity_data_source',
+        ))
+
+        severity_field_groups_by_indicator.extend(fields_of(
+            'has_trends_evolution_data',
+            'trends_evolution_data_date_earliest',
+            'trends_evolution_data_date_latest',
+            'trends_evolution_data_source',
+        ))
+
 #       # TODO: Needs activities gaps
 #        field_groups_by_indicator.extend(fields_of(
 #            # TODO: active_clusters
@@ -199,6 +215,10 @@ class CreateReviewForm(forms.ModelForm):
             Fieldset(
                 'Population data',
                 *pop_field_groups_by_indicator
+            ),
+            Fieldset(
+                'Severity, Analysis and Evolution data',
+                *severity_field_groups_by_indicator
             ),
             Fieldset(
                 'Indicators/statistics',
