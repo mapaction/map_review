@@ -62,6 +62,7 @@ def fields_of(indicator, *fields):
 class CreateReviewForm(forms.ModelForm):
     class Meta:
         model = Map
+        fields = '__all__'
 
     def __init__(self, *args, **kwargs):
         group = kwargs.pop('group', None)
@@ -76,7 +77,19 @@ class CreateReviewForm(forms.ModelForm):
         self.helper = FormHelper()
         self.helper.help_text_inline = True
 
+        decision_making_field_groups_by_indicator = []
+        decision_making_field_groups_by_indicator.extend(fields_of(
+            'has_explicit_indication_of_target_audience',
+            'explicit_target_audience_text_explanation',
+            'has_potential_target_audience',
+            'potential_target_audience_text',
+        ))
+
         geo_field_groups_by_indicator = []
+        geo_field_groups_by_indicator.extend(fields_of(
+            'has_basemap_image_indicator_data',
+            'basemap_image_indicator_data_source',
+        ))
         geo_field_groups_by_indicator.extend(fields_of(
             'has_satellite_data',
             'phase_type',
@@ -215,6 +228,10 @@ class CreateReviewForm(forms.ModelForm):
                 Field('infographics', css_class='chosen'),
                 Field('disclaimer', css_class='chosen'),
                 'copyright',
+            ),
+            Fieldset(
+                'Decision making / Audience target data',
+                *decision_making_field_groups_by_indicator
             ),
             Fieldset(
                 'Geographic data',
