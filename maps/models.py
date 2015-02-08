@@ -291,6 +291,7 @@ class Map(models.Model):
         related_name="basemap_image_indicator_data_source_for",
         null=True, blank=True,
     )
+
     # Satellite data group
     has_satellite_data = models.BooleanField(default=False)
     phase_type = models.CharField(
@@ -308,6 +309,7 @@ class Map(models.Model):
         related_name="satellite_source_for",
         null=True, blank=True
     )
+
     # Admin boundaries group
     has_admin_boundaries = models.BooleanField(default=False)
     admin_max_detail_level = models.CharField(
@@ -324,6 +326,7 @@ class Map(models.Model):
         related_name="admin_source_for",
         null=True, blank=True,
     )
+
     # Roads group
     has_roads = models.BooleanField(default=False)
     roads_data_source = models.ForeignKey(
@@ -331,6 +334,7 @@ class Map(models.Model):
         related_name="roads_source_for",
         null=True, blank=True,
     )
+
     # Hydrography group
     has_hydrographic_network = models.BooleanField(default=False)
     hydrographic_data_source = models.ForeignKey(
@@ -338,6 +342,7 @@ class Map(models.Model):
         related_name="hydrographic_source_for",
         null=True, blank=True,
     )
+
     # Elevation group
     has_elevation_data = models.BooleanField(default=False)
     elevation_data_type = models.CharField(
@@ -353,6 +358,7 @@ class Map(models.Model):
         related_name="elevation_source_for",
         null=True, blank=True,
     )
+
     # Settlements group
     has_settlements_data = models.BooleanField(default=False)
     settlements_max_detail_level = models.CharField(
@@ -373,6 +379,7 @@ class Map(models.Model):
         related_name="settlements_source_for",
         null=True, blank=True,
     )
+
     # Health group
     has_health_data = models.BooleanField(default=False)
     health_data_source = models.ForeignKey(
@@ -380,6 +387,7 @@ class Map(models.Model):
         related_name="health_source_for",
         null=True, blank=True,
     )
+
     # Schools group
     has_schools_data = models.BooleanField(default=False)
     schools_data_source = models.ForeignKey(
@@ -387,6 +395,7 @@ class Map(models.Model):
         related_name="schools_source_for",
         null=True, blank=True,
     )
+
     # Shelter group
     has_shelter_data = models.BooleanField(default=False)
     shelter_data_source = models.ForeignKey(
@@ -428,6 +437,7 @@ class Map(models.Model):
     impact_situational_date_latest = models.DateField(
         null=True, blank=True,
     )
+
     # Damage group
     damaged_objects = MultiSelectField(
         choices=make_choices(
@@ -472,6 +482,7 @@ class Map(models.Model):
     population_data_date_latest = models.DateField(
         null=True, blank=True,
     )
+
     # Affected population group
     has_affected_population_data = models.BooleanField(default=False)
     humanitarian_profile_level_1_types = MultiSelectField(
@@ -503,6 +514,7 @@ class Map(models.Model):
         related_name="affected_population_source_for",
         null=True, blank=True,
     )
+
     # Vulnerability group
     has_vulnerable_population_data = models.BooleanField(
         default=False,
@@ -520,6 +532,7 @@ class Map(models.Model):
         related_name="vulnerability_data_source_for",
         null=True, blank=True,
     )
+
     # Population movements group
     has_population_movements_data = models.BooleanField(
         default=False,
@@ -535,6 +548,7 @@ class Map(models.Model):
         DataSource,
         related_name="population_movements_source_for",
     )
+
     # Affected population coping mechanisms group
     has_affected_pop_coping_mechanisms_data = models.BooleanField(
         default=False,
@@ -574,6 +588,7 @@ class Map(models.Model):
         DataSource,
         related_name="severity_data_source_for",
     )
+
     # Trends/Evolution group
     has_trends_evolution_data = models.BooleanField(
         default=False,
