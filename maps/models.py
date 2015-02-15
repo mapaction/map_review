@@ -272,6 +272,26 @@ class Map(models.Model):
         null=True, blank=True
     )
 
+    # Decision Making/Audience targets group
+    # Decision making/audience targets
+    has_explicit_indication_of_target_audience = models.BooleanField(
+        default=False
+    )
+    explicit_target_audience_text_explanation = models.TextField(
+        blank=True, null=True,
+    )
+    has_potential_target_audience = models.BooleanField(default=False)
+    potential_target_audience_text = models.TextField(blank=True, null=True)
+
+    # Geographic Data Block
+    # Basemap image group
+    has_basemap_image_indicator_data = models.BooleanField(default=False)
+    basemap_image_indicator_data_source = models.ManyToManyField(
+        DataSource,
+        related_name="basemap_image_indicator_data_source_for",
+        null=True, blank=True,
+    )
+
     # Satellite data group
     has_satellite_data = models.BooleanField(default=False)
     phase_type = models.CharField(
@@ -360,7 +380,7 @@ class Map(models.Model):
         null=True, blank=True,
     )
 
-    # Health data
+    # Health group
     has_health_data = models.BooleanField(default=False)
     health_data_source = models.ForeignKey(
         DataSource,
@@ -387,7 +407,8 @@ class Map(models.Model):
         null=True, blank=True,
     )
 
-    # Physical impact
+    # Physical impact block
+    # Physical impact group
     has_impact_geographic_extent = models.BooleanField(default=False)
     impact_data_types = MultiSelectField(
         choices=make_choices(
@@ -416,6 +437,8 @@ class Map(models.Model):
     impact_situational_date_latest = models.DateField(
         null=True, blank=True,
     )
+
+    # Damage group
     damaged_objects = MultiSelectField(
         choices=make_choices(
             'Buildings',
@@ -440,6 +463,7 @@ class Map(models.Model):
         null=True, blank=True,
     )
 
+    # Population data, affected groups and humanitarian profile block
     # Population group
     has_population_data = models.BooleanField(default=False)
     population_data_type = models.CharField(
@@ -459,6 +483,7 @@ class Map(models.Model):
         null=True, blank=True,
     )
 
+    # Affected population group
     has_affected_population_data = models.BooleanField(default=False)
     humanitarian_profile_level_1_types = MultiSelectField(
         choices=make_choices(
@@ -478,7 +503,6 @@ class Map(models.Model):
         ),
         null=True, blank=True,
     )
-
     affected_population_data_date_earliest = models.DateField(
         null=True, blank=True,
     )
@@ -491,7 +515,7 @@ class Map(models.Model):
         null=True, blank=True,
     )
 
-    # Vulnerability block
+    # Vulnerability group
     has_vulnerable_population_data = models.BooleanField(
         default=False,
         help_text="Does the map show information on specific vulnerabilities "
@@ -509,7 +533,7 @@ class Map(models.Model):
         null=True, blank=True,
     )
 
-    # Population movements block
+    # Population movements group
     has_population_movements_data = models.BooleanField(
         default=False,
         help_text="Does the map show population movement information?"
@@ -525,7 +549,7 @@ class Map(models.Model):
         related_name="population_movements_source_for",
     )
 
-    # Affected population coping mechanisms block
+    # Affected population coping mechanisms group
     has_affected_pop_coping_mechanisms_data = models.BooleanField(
         default=False,
         help_text="Does the map show information on coping mechanisms of the "
@@ -543,8 +567,8 @@ class Map(models.Model):
         related_name="affected_population_coping_mechanisms_source_for"
     )
 
-    # Severity, analyses and evolution group
-    # Severity, and composite analysis block
+    # Severity, analyses and evolution block
+    # Severity, and composite analysis group
     has_severity_data = models.BooleanField(
         default=False,
         help_text="Does the map show information of severity of impact?"
@@ -565,7 +589,7 @@ class Map(models.Model):
         related_name="severity_data_source_for",
     )
 
-    # Trends/Evolution block
+    # Trends/Evolution group
     has_trends_evolution_data = models.BooleanField(
         default=False,
         help_text="Does the map show analysis of trends/potential evolution "
@@ -582,14 +606,15 @@ class Map(models.Model):
         related_name="trends_evolution_data_source_for",
     )
 
-    # Statistical data
+    # Inidicators / Statistics block
+    # Statistical data group
     has_statistical_data = models.BooleanField(default=False)
     statistical_data = models.ManyToManyField(
         StatisticalOrIndicatorData,
         null=True, blank=True,
     )
 
-    # Needs, activites & gaps
+    # Needs, activites & gaps block
     # TODO:
 #    active_clusters = models.ManyToManyField(
 #        Cluster
@@ -600,7 +625,11 @@ class Map(models.Model):
 #    assessments = models.ManyToManyField(
 #        Assessment
 #    )
+    # Needs group
     has_humanitarian_needs = models.BooleanField(default=False)
+    hunanitarian_needs_affected_population = models.TextField(
+        blank=True, null=True,
+    )
     humanitarian_needs_data_date_earliest = models.DateField(
         null=True, blank=True,
     )
