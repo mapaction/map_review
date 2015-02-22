@@ -81,6 +81,8 @@ class CreateReviewForm(forms.ModelForm):
         decision_making_field_groups_by_indicator.extend(fields_of(
             'has_explicit_indication_of_target_audience',
             'explicit_target_audience_text_explanation',
+        ))
+        decision_making_field_groups_by_indicator.extend(fields_of(
             'has_potential_target_audience',
             'potential_target_audience_text',
         ))
