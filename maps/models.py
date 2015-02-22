@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import RegexValidator
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
+from django.utils.translation import ugettext_lazy as _
 
 from django_hstore import hstore
 
@@ -157,6 +158,18 @@ class ReviewGroup(models.Model):
         "(one per line)."
     )
 
+    allow_pdf_uploads = models.BooleanField(default=False)
+    need_url_links = models.BooleanField(
+        default=True,
+        help_text="Should the Reviewer link to the map they reviewed? "
+        "If they are not uploading a map, they likely should."
+    )
+    map_url_help_text = models.CharField(
+        help_text="Where should the reviewer link to? (E.g. ReliefWeb)",
+        max_length=200,
+        blank=True, null=True
+    )
+
     def __unicode__(self):
         return u"{} -- {}".format(self.name, self.event.glide_number)
 
@@ -174,12 +187,21 @@ class ExtentMultiSelectField(MultiSelectField):
 class Map(models.Model):
     """Storage of a Map object."""
     review_created_on = models.DateTimeField(auto_now_add=True)
-    reviewer_name = models.CharField(max_length=300)
+    reviewer_name = models.CharField(
+        'Reviewer full name',
+        max_length=300,
+    )
+    reviewer_email = models.EmailField(
+        'Reviewer email address',
+        help_text="For our records. This will not be shared outside of the "
+        "partner organisations."
+    )
     file_name = models.CharField(
         max_length=300, blank=True, null=True,
         help_text="In case we can't attach the actual file"
     )
     url = models.URLField(
+        'Map URL',
         blank=True, null=True,
         help_text="Map URL if available"
     )
@@ -232,19 +254,22 @@ class Map(models.Model):
         "production."
     )
     is_part_of_series = models.BooleanField(
+        "Is or was this map part of a series?",
         default=False,
-        help_text="Is/was the map part of a regularly udpated series?"
+        help_text="If you are not sure, tick the box and select 'Unknown' below"
     )
     update_frequency = models.CharField(
         max_length=10,
         choices=make_choices(
+            'Unknown',
             'Daily',
             'Weekly',
             'Monthly',
             'Other',
         ),
         help_text="If the map was part of a series, approximately how "
-        "frequently was it updated?"
+        "frequently was it updated?",
+        null=True, blank=True
     )
     # TODO: infographics indicated to be choice list, with multiples possible.
     # Not sure what these choices are (per map?)
@@ -256,7 +281,8 @@ class Map(models.Model):
             'Table',
             'Other',
         ),
-        help_text="Infographics or other non-map items in map.",
+        help_text="List of infographics or other non-map items appearing on the"
+        " map",
         null=True, blank=True
     )
     disclaimer = MultiSelectField(
@@ -266,7 +292,8 @@ class Map(models.Model):
             'Narrative on possible errors/limitations',
             'Uses statistical confidence measures for the data',
         ),
-        null=True, blank=True
+        null=True, blank=True,
+        help_text="Type of disclaimer appearing on the map"
     )
     copyright = models.TextField(
         null=True, blank=True
