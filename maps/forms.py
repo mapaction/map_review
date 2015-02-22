@@ -297,6 +297,11 @@ class CreateReviewForm(forms.ModelForm):
         if self.group is not None and self.group.map_url_help_text:
             self.fields['url'].help_text = self.group.map_url_help_text
 
+        if self.group is not None and self.group.admin_levels_help_text:
+            self.fields['admin_max_detail_level'].help_text = (
+                self.group.admin_levels_help_text
+            )
+
         for field in self.fields:
             f = self.fields[field]
             if (isinstance(f, forms.MultipleChoiceField) or

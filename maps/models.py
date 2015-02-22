@@ -170,6 +170,12 @@ class ReviewGroup(models.Model):
         blank=True, null=True
     )
 
+    admin_levels_help_text = models.TextField(
+        help_text="An explanation of what e.g. Admin Level 4 means in the "
+        "context of the region/country being mapped.",
+        null=True, blank=True,
+    )
+
     def __unicode__(self):
         return u"{} -- {}".format(self.name, self.event.glide_number)
 
@@ -296,7 +302,9 @@ class Map(models.Model):
         help_text="Type of disclaimer appearing on the map"
     )
     copyright = models.TextField(
-        null=True, blank=True
+        null=True, blank=True,
+        help_text="You can just enter 'Yes' instead of the copyright "
+        "text if you wish. We will update this later."
     )
 
     # Decision Making/Audience targets group
@@ -341,10 +349,10 @@ class Map(models.Model):
     has_admin_boundaries = models.BooleanField(default=False)
     admin_max_detail_level = models.CharField(
         choices=make_choices(
-            'Regions (Level 1)',
-            'Provinces (Level 2)',
-            'Municipalities (Level 3)',
-            'Barangays (Level 4)',
+            'Level 1',
+            'Level 2',
+            'Level 3',
+            'Level 4',
         ), max_length=50,
         null=True, blank=True,
     )
