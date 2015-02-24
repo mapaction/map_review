@@ -2,7 +2,9 @@ from django.db import models
 from django.core.validators import RegexValidator
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
-from django.utils.translation import ugettext_lazy as _
+# from django.utils.translation import ugettext_lazy as _
+# commenting out the above as was causing a pep8 error
+# F401 '_' imported but unused
 
 from django_hstore import hstore
 
@@ -262,7 +264,8 @@ class Map(models.Model):
     is_part_of_series = models.BooleanField(
         "Is or was this map part of a series?",
         default=False,
-        help_text="If you are not sure, tick the box and select 'Unknown' below"
+        help_text="If you are not sure, tick the box and select 'Unknown' "
+        "below"
     )
     update_frequency = models.CharField(
         max_length=10,
@@ -287,8 +290,8 @@ class Map(models.Model):
             'Table',
             'Other',
         ),
-        help_text="List of infographics or other non-map items appearing on the"
-        " map",
+        help_text="List of infographics or other non-map items appearing on "
+        "the map",
         null=True, blank=True
     )
     disclaimer = MultiSelectField(
@@ -582,6 +585,7 @@ class Map(models.Model):
     population_movements_data_source = models.ManyToManyField(
         DataSource,
         related_name="population_movements_source_for",
+        null=True, blank=True,
     )
 
     # Affected population coping mechanisms group
@@ -599,7 +603,8 @@ class Map(models.Model):
     )
     affected_pop_coping_mechanisms_data_source = models.ManyToManyField(
         DataSource,
-        related_name="affected_population_coping_mechanisms_source_for"
+        related_name="affected_population_coping_mechanisms_source_for",
+        null=True, blank=True,
     )
 
     # Severity, analyses and evolution block
@@ -622,6 +627,7 @@ class Map(models.Model):
     severity_data_source = models.ManyToManyField(
         DataSource,
         related_name="severity_data_source_for",
+        null=True, blank=True,
     )
 
     # Trends/Evolution group
@@ -639,6 +645,7 @@ class Map(models.Model):
     trends_evolution_data_source = models.ManyToManyField(
         DataSource,
         related_name="trends_evolution_data_source_for",
+        null=True, blank=True,
     )
 
     # Inidicators / Statistics block
