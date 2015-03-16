@@ -65,7 +65,7 @@ class CreateReviewForm(forms.ModelForm):
         fields = '__all__'
 
     def __init__(self, *args, **kwargs):
-        group = kwargs.pop('group', None)
+        self.group = kwargs.pop('group', None)
         super(CreateReviewForm, self).__init__(*args, **kwargs)
         # The default widget is a checkbox one, but we want to use chosen
         # so revert to regular select:
@@ -201,16 +201,27 @@ class CreateReviewForm(forms.ModelForm):
 #       # TODO: Additional data sources
 #       # TODO: General data sources
 
+        map_meta = []
+        if self.group is None or self.group.allow_pdf_uploads:
+            map_meta.append('file_name')
+            map_meta.append('pdf')
+        if self.group is None or self.group.need_url_links:
+            map_meta.append(
+                Field(
+                    'url',
+                    help_text="URL on ReliefWeb is map posted there."
+                )
+            )
+
         self.helper.layout = Layout(
             Fieldset(
                 'Reviewer details',
                 Field('reviewer_name', title='Your name'),
+                Field('reviewer_email', title='Your email address'),
             ),
             Fieldset(
                 'Map file/location details',
-                'file_name',
-                'url',
-                'pdf',
+                *map_meta
             ),
             Fieldset(
                 'General map information',
@@ -225,11 +236,16 @@ class CreateReviewForm(forms.ModelForm):
                 Field('extent', css_class='chosen'),
                 Field('authors_or_producers', css_class='chosen'),
                 Field('donors', css_class='chosen'),
-                'is_part_of_series',
-                Field('update_frequency', css_class='chosen'),
                 Field('infographics', css_class='chosen'),
                 Field('disclaimer', css_class='chosen'),
                 'copyright',
+            ),
+            Fieldset(
+                'Series',
+                *fields_of(
+                    'is_part_of_series',
+                    'update_frequency',
+                )
             ),
             Fieldset(
                 'Decision making / Audience target data',
@@ -271,18 +287,32 @@ class CreateReviewForm(forms.ModelForm):
                 Submit('save', 'Save changes'),
             )
         )
+
         # If this is a grouped review, lock some fields
-        lock_for_group = self.initial and 'event' in self.initial
+        lock_for_group = (
+            self.group and self.initial and 'event' in self.initial)
         if lock_for_group:
             self.fields['event'].widget.attrs['readonly'] = True
             self.fields['event'].widget.attrs['disabled'] = True
-            self.fields['extent'].choices = group.get_extent_options()
+            self.fields['extent'].choices = self.group.get_extent_options()
+
+        if self.group is not None and self.group.map_url_help_text:
+            self.fields['url'].help_text = self.group.map_url_help_text
+
+        if self.group is not None and self.group.admin_levels_help_text:
+            self.fields['admin_max_detail_level'].help_text = (
+                self.group.admin_levels_help_text
+            )
 
         for field in self.fields:
             f = self.fields[field]
             if (isinstance(f, forms.MultipleChoiceField) or
                     isinstance(f, forms.ModelMultipleChoiceField)):
                 f.widget.attrs['data-placeholder'] = _('Select Option(s)')
+                # Workaround for obnoxious Django field see bug
+                # https://code.djangoproject.com/ticket/9321
+                if f.help_text.find('Hold down ') > -1:
+                    f.help_text = f.help_text[:f.help_text.find('Hold down ')]
             if field.endswith('date_earliest'):
                 f.label = f.label.replace(' earliest', '')
                 f.help_text = _(

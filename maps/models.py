@@ -2,6 +2,9 @@ from django.db import models
 from django.core.validators import RegexValidator
 from django.core.urlresolvers import reverse
 from django.contrib.auth.models import User
+# from django.utils.translation import ugettext_lazy as _
+# commenting out the above as was causing a pep8 error
+# F401 '_' imported but unused
 
 from django_hstore import hstore
 
@@ -157,6 +160,24 @@ class ReviewGroup(models.Model):
         "(one per line)."
     )
 
+    allow_pdf_uploads = models.BooleanField(default=False)
+    need_url_links = models.BooleanField(
+        default=True,
+        help_text="Should the Reviewer link to the map they reviewed? "
+        "If they are not uploading a map, they likely should."
+    )
+    map_url_help_text = models.CharField(
+        help_text="Where should the reviewer link to? (E.g. ReliefWeb)",
+        max_length=200,
+        blank=True, null=True
+    )
+
+    admin_levels_help_text = models.TextField(
+        help_text="An explanation of what e.g. Admin Level 4 means in the "
+        "context of the region/country being mapped.",
+        null=True, blank=True,
+    )
+
     def __unicode__(self):
         return u"{} -- {}".format(self.name, self.event.glide_number)
 
@@ -174,12 +195,21 @@ class ExtentMultiSelectField(MultiSelectField):
 class Map(models.Model):
     """Storage of a Map object."""
     review_created_on = models.DateTimeField(auto_now_add=True)
-    reviewer_name = models.CharField(max_length=300)
+    reviewer_name = models.CharField(
+        'Reviewer full name',
+        max_length=300,
+    )
+    reviewer_email = models.EmailField(
+        'Reviewer email address',
+        help_text="For our records. This will not be shared outside of the "
+        "partner organisations."
+    )
     file_name = models.CharField(
         max_length=300, blank=True, null=True,
         help_text="In case we can't attach the actual file"
     )
     url = models.URLField(
+        'Map URL',
         blank=True, null=True,
         help_text="Map URL if available"
     )
@@ -232,19 +262,23 @@ class Map(models.Model):
         "production."
     )
     is_part_of_series = models.BooleanField(
+        "Is or was this map part of a series?",
         default=False,
-        help_text="Is/was the map part of a regularly udpated series?"
+        help_text="If you are not sure, tick the box and select 'Unknown' "
+        "below"
     )
     update_frequency = models.CharField(
         max_length=10,
         choices=make_choices(
+            'Unknown',
             'Daily',
             'Weekly',
             'Monthly',
             'Other',
         ),
         help_text="If the map was part of a series, approximately how "
-        "frequently was it updated?"
+        "frequently was it updated?",
+        null=True, blank=True
     )
     # TODO: infographics indicated to be choice list, with multiples possible.
     # Not sure what these choices are (per map?)
@@ -256,7 +290,8 @@ class Map(models.Model):
             'Table',
             'Other',
         ),
-        help_text="Infographics or other non-map items in map.",
+        help_text="List of infographics or other non-map items appearing on "
+        "the map",
         null=True, blank=True
     )
     disclaimer = MultiSelectField(
@@ -266,10 +301,13 @@ class Map(models.Model):
             'Narrative on possible errors/limitations',
             'Uses statistical confidence measures for the data',
         ),
-        null=True, blank=True
+        null=True, blank=True,
+        help_text="Type of disclaimer appearing on the map"
     )
     copyright = models.TextField(
-        null=True, blank=True
+        null=True, blank=True,
+        help_text="You can just enter 'Yes' instead of the copyright "
+        "text if you wish. We will update this later."
     )
 
     # Decision Making/Audience targets group
@@ -314,10 +352,10 @@ class Map(models.Model):
     has_admin_boundaries = models.BooleanField(default=False)
     admin_max_detail_level = models.CharField(
         choices=make_choices(
-            'Regions (Level 1)',
-            'Provinces (Level 2)',
-            'Municipalities (Level 3)',
-            'Barangays (Level 4)',
+            'Level 1',
+            'Level 2',
+            'Level 3',
+            'Level 4',
         ), max_length=50,
         null=True, blank=True,
     )
@@ -547,6 +585,7 @@ class Map(models.Model):
     population_movements_data_source = models.ManyToManyField(
         DataSource,
         related_name="population_movements_source_for",
+        null=True, blank=True,
     )
 
     # Affected population coping mechanisms group
@@ -564,7 +603,8 @@ class Map(models.Model):
     )
     affected_pop_coping_mechanisms_data_source = models.ManyToManyField(
         DataSource,
-        related_name="affected_population_coping_mechanisms_source_for"
+        related_name="affected_population_coping_mechanisms_source_for",
+        null=True, blank=True,
     )
 
     # Severity, analyses and evolution block
@@ -587,6 +627,7 @@ class Map(models.Model):
     severity_data_source = models.ManyToManyField(
         DataSource,
         related_name="severity_data_source_for",
+        null=True, blank=True,
     )
 
     # Trends/Evolution group
@@ -604,6 +645,7 @@ class Map(models.Model):
     trends_evolution_data_source = models.ManyToManyField(
         DataSource,
         related_name="trends_evolution_data_source_for",
+        null=True, blank=True,
     )
 
     # Inidicators / Statistics block
